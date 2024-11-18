@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "State List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using System.Data
+@model DataTable
+
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a asp-controller="Home" asp-action="Index"><i class="fa fa-home"></i>&nbsp;Home</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a asp-controller="LOC_State" asp-action="Index">State List</a>
+            <i class="fa fa-circle"></i>
+        </li>
+    </ul>
+</div>
+
+<div class="portlet light bordered margin-top-10">
+    <div class="portlet-title">
+        <div class="caption font-dark">
+            <i class="icon-settings font-dark"></i>
+            <span class="caption-subject bold uppercase">State List</span>
+        </div>
+        <div class="actions">
+            <div class="btn-group btn-group-devided">
+                <a asp-area="LOC_State" asp-controller="Home" asp-action="Add" class="btn green"><i class="fa fa-plus"></i>&nbsp;Add State</a>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="pull-right">
+            <div id="sample_1_filter" class="dataTables_filter">
+                <label>Search Any&nbsp;<input type="text" class="form-control input-sm input-small input-inline" id="sample_1"></label>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover table-header-fixed dataTable">
+            <thead>
+                <tr class="">
+                    @*<th>Country ID</th>*@
+                    <th>Country Name</th>
+                    <th>State Name</th>
+                    <th>State Code</th>
+                    <th class="text-center">Created</th>
+                    <th class="text-center">Modified</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="sample_2">
+                @foreach (DataRow dr in Model.Rows)
+                {
+                    <tr>
+                        @*<td>@dr["CountryID"]</td>*@
+                        <td>@dr["CountryName"]</td>
+                        <td>@dr["StateName"]</td>
+                        <td>@dr["StateCode"]</td>
+                        <td class="text-center">@Convert.ToDateTime(dr["Created"]).ToString("dd-MM-yyyy hh:mm:ss")</td>
+                        <td class="text-center">@Convert.ToDateTime(dr["Modified"]).ToString("dd-MM-yyyy hh:mm:ss")</td>
+                        <td class="text-center">
+                            <form method="post" asp-area="LOC_State" asp-controller="Home" asp-action="Delete">
+                                <input type="hidden" name="StateID" value="@Convert.ToInt32(dr["StateID"])">
+                                <button type="submit" class="btn btn-danger btn-xs" onclick="return fun1();"><i class="fa fa-close"></i></button>
+                                <a class="btn btn-info btn-xs" asp-area="LOC_State" asp-controller="Home" asp-action="Add" asp-route-stateid="@Convert.ToInt32(dr["StateID"])"><i class="fa fa-pencil"></i></a>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- END EXAMPLE TABLE PORTLET-->
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $("#sample_1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#sample_2 tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+        function fun1() {
+            if (confirm("Are you sure you want to delete?")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    </script>
+}
